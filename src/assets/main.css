@@ -1,0 +1,123 @@
+@import url("https://fonts.googleapis.com/css2?family=Kanit:wght@200;300;500&display=swap");
+
+:root.light {
+    --body-background-color: rgb(255, 255, 255);
+    --text-color: rgb(41, 41, 41);
+    --accent-grey-color: rgb(243, 243, 243);
+    --accent-blue-color: rgb(255, 255, 255);
+    --interactable-hover: rgb(220, 220, 220);
+}
+
+@media (prefers-color-scheme: dark) {
+    :root {
+        --body-background-color: rgb(16, 16, 16);
+        --text-color: rgb(237, 237, 237);
+        --accent-grey-color: rgb(29, 29, 29);
+        --accent-blue-color: rgb(26, 26, 35);
+        --interactable-hover: rgb(41, 41, 58);
+    }
+}
+
+:root.dark {
+    --body-background-color: rgb(16, 16, 16);
+    --text-color: rgb(237, 237, 237);
+    --accent-grey-color: rgb(29, 29, 29);
+    --accent-blue-color: rgb(26, 26, 35);
+    --interactable-hover: rgb(41, 41, 58);
+}
+
+body {
+    font-family: Arial, Helvetica, sans-serif;
+    font-family: "Kanit", sans-serif;
+    background: var(--body-background-color);
+    color: var(--text-color);
+}
+
+body,
+body > * {
+    transition: color 100ms, background calc(500ms);
+}
+
+#app {
+    max-width: 1280px;
+    margin: 0 auto;
+    padding: 2rem;
+    font-weight: normal;
+}
+
+.leaderboard {
+    padding: 2rem 0 2rem 0;
+    margin: 0;
+}
+
+.grid-container {
+    display: grid;
+    grid-template-columns: 1fr 3fr 2fr auto;
+    align-items: center;
+    padding: 0 1rem;
+}
+
+.grid-container > * {
+    padding: 1rem;
+}
+
+.grid-container > div > button,
+.non-icon-button {
+    padding: 0.8rem;
+    margin: 0.2rem;
+    height: 3em;
+    width: 3em;
+    font-size: 1.5em;
+    background: var(--accent-blue-color);
+    color: var(--text-color);
+    border: none;
+    border-radius: 50%;
+    transition: background 100ms;
+}
+
+.grid-container > div > button:hover,
+.non-icon-button:hover {
+    background: var(--interactable-hover);
+    cursor: pointer;
+}
+
+.ranking,
+.username,
+.points {
+    font-weight: bold;
+    font-size: 1.2em;
+}
+
+.position-color-1 {
+    background: rgb(245, 197, 75);
+}
+
+.position-color-2 {
+    background: rgb(198, 198, 204);
+}
+
+.position-color-3 {
+    background: rgb(171, 107, 86);
+}
+
+.position-color-1,
+.position-color-2,
+.position-color-3 {
+    font-weight: bold;
+    font-size: 1em !important;
+    border-radius: 50%;
+}
+
+.ranking {
+    width: 1rem;
+    height: 1rem;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+hr {
+    background: var(--accent-grey-color);
+    height: 0.2rem;
+    border: none;
+}
