@@ -1,3 +1,19 @@
+<script setup>
+import { useCollection, useFirestore } from "vuefire";
+import { collection } from "firebase/firestore";
+const db = useFirestore();
+let collectionRef, todos;
+try {
+    collectionRef = new URLSearchParams(window.location.search).get("ref");
+    todos = useCollection(collection(db, window.atob(collectionRef)));
+    console.log(`refs (plaintext) "${window.atob(collectionRef)}"`);
+} catch (err) {
+    console.error(
+        `refs (original) "${collectionRef}" is incorrectly encoded. If you are seeing this error, the ref you tried accessing does not exist!`
+    );
+}
+</script>
+
 <template>
     <div class="leaderboard">
         <div v-for="(entry, index) in entries" :key="entry.id">
