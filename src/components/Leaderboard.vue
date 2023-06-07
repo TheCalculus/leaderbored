@@ -1,21 +1,3 @@
-<script setup>
-import { useCollection, useFirestore } from "vuefire";
-import { collection } from "firebase/firestore";
-
-const db = useFirestore();
-let collectionRef, todos;
-
-try {
-    collectionRef = new URLSearchParams(window.location.search).get("ref");
-    todos = useCollection(collection(db, window.atob(collectionRef)));
-    console.log(`refs (plaintext) "${window.atob(collectionRef)}"`);
-} catch (err) {
-    console.error(
-        `refs (original) "${collectionRef}" is incorrectly encoded. If you are seeing this error, the ref you tried accessing does not exist!`
-    );
-}
-</script>
-
 <template>
     <div class="leaderboard">
         <div v-for="(entry, index) in entries" :key="entry.id">
@@ -26,8 +8,6 @@ try {
             ></LeaderboardItem>
             <hr v-if="index !== entries.length - 1" />
         </div>
-        <span v-if="todos === null">Waiting...</span>
-        <span v-else v-for="todo in todos" :key="todo.id">{{ todo }}</span>
     </div>
     <input type="text" ref="userUsername" placeholder="new username" />
     <input type="number" ref="userPoints" placeholder="new user points" />
