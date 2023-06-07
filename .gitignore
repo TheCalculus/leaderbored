@@ -18,7 +18,7 @@ coverage
 /cypress/screenshots/
 
 # firebase config
-./src/firebase.js
+/src/firebase.js
 
 # Editor directories and files
 .vscode/*
