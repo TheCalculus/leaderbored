@@ -1,5 +1,5 @@
 <template>
-    <button @click="toggleTheme" ref="themeSwitch" class="non-icon-button">
+    <button @click="toggleTheme" ref="themeSwitch" class="icon-button">
         &#9788; / &#9728;
     </button>
 </template>

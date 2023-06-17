@@ -1,8 +1,10 @@
 <script setup>
 import { useCollection, useFirestore } from "vuefire";
 import { collection } from "firebase/firestore";
+
 const db = useFirestore();
 let collectionRef, todos;
+
 try {
     collectionRef = new URLSearchParams(window.location.search).get("ref");
     todos = useCollection(collection(db, window.atob(collectionRef)));
@@ -27,7 +29,7 @@ try {
     </div>
     <input type="text" ref="userUsername" placeholder="new username" />
     <input type="number" ref="userPoints" placeholder="new user points" />
-    <button @click="newEntry">create new user</button>
+    <button @click="newEntry" class="non-icon-button">create new user</button>
 </template>
 
 <script>

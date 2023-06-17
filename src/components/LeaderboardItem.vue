@@ -38,3 +38,6 @@ export default {
     },
 };
 </script>
+
+<style scoped src="../assets/lb_item.css">
+</style>
