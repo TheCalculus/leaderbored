@@ -5,8 +5,7 @@
 <h1 align="center">leaderbored</h1>
 
 <p align="center">
-    i was bored so i made a leaderboard webapp <br>
-    <i>yw bruxon now cancac finally has a working leaderboard!!</i>
+    leaderboard webapp for fun    
 </p>
 
-<p>project readme in progress of being written!</p>
+<p>project readme in progress of being written</p>
