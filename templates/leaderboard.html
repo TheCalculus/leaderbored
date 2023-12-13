@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/board.css') }}">
+</head>
+
+<body>
+    {% extends "base.html" %}
+    {% block content %}
+    <section class="layout">
+        <div class="header">
+            <h1 class="name">board name</h1>
+            <p class="owner">board owner</p>
+            <p class="parts">0 participants</p>
+        </div>
+        <div class="left">
+            <h1>chat</h1>
+        </div>
+        <div class="body">
+            <h1>board content</h1>
+        </div>
+        <div class="right">
+            <h1>log</h1>
+        </div>
+    </section>
+    {% endblock %}
+</body>
+
+</html>
