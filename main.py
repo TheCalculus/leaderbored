@@ -16,7 +16,7 @@ def board(id):
 
 @app.context_processor
 def inject_global_variables():
-    name = "serika_dark"
+    name = "terminal"
     return dict(name=name)
 
 if __name__ == "__main__":
