@@ -118,14 +118,16 @@ body {
 
 .entry:hover {
     background: var(--sub-color) !important;
+    color: var(--text-color) !important;
 }
 
 .entry:nth-child(odd) {
     background: var(--sub-alt-color);
 }
 
-.entry > * {
+.entry {
     color: var(--sub-color);
+    transition: color 150ms;
 }
 
 .entry:nth-child(2) > *,

@@ -89,7 +89,14 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // the python backend loaded this data
+        var records = {{ data | tojson }};
+        console.log(records);
+    </script>
     {% endblock %}
+
 </body>
 
 </html>
