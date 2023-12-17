@@ -14,8 +14,8 @@
     <h1>leaderbored</h1>
 
     <form id="newBoard">
-        <label for="boardName">board Name:</label>
-        <input type="text" id="boardName" name="boardName" required>
+        <label for="name">board Name:</label>
+        <input type="text" id="boardName" name="name" required>
         <button type="button" onclick="submitForm()">create Board</button>
     </form>
 
@@ -26,11 +26,10 @@
             fetch('/board/create', {
                 method: 'POST',
                 body: formData
-            })
-                .then(data => {
-                    console.log(data);
-                })
-                .catch(error => console.error('error:', error));
+            }).then(data => {
+                  console.log(data);
+              })
+              .catch(error => console.error('error:', error));
         }
     </script>
     {% endblock %}
