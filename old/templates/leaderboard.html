@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/board.css') }}">
+</head>
+
+<body>
+    {% extends "base.html" %}
+    {% block content %}
+    <div class="content">
+        <div class="box">
+            <div class="board_info">
+                <p class="important">
+                    <i class="fa fa-hashtag" aria-hidden="true"></i>
+                    xuvh
+                </p>
+                <p>
+                    <i class="fa fa-tag" aria-hidden="true"></i>
+                    jimmy's jimm
+                </p>
+                <div class="separator"></div>
+                <p>
+                    <i class="fa fa-question-circle" aria-hidden="true"></i>
+                    by jimm
+                </p>
+                <p>
+                    <i class="fa fa-random" aria-hidden="true"></i>
+                    100 participants
+                </p>
+            </div>
+            <div class="self_info">
+                <p>
+                    <i class="fa fa-user" aria-hidden="true"></i>
+                    notjim
+                </p>
+                <p>
+                    <!-- *under consideration* stonks icon? -->
+                    <!--  <i class="fa fa-arrow-up" aria-hidden="true"></i> -->
+                    <!--  <i class="fa fa-arrow-down" aria-hidden="true"></i> -->
+                    <!--  <i class="fa fa-minus" aria-hidden="true"></i> -->
+                    1000 points
+                </p>
+                <p>
+                    <i class="fa fa-cog" aria-hidden="true"></i>
+                </p>
+            </div>
+        </div>
+        <div class="board">
+            <div class="entry">
+                <i class="fa fa-hashtag" aria-hidden="true"></i>
+                <p>username</p>
+                <p></p>
+                <p>points</p>
+            </div>
+            {% for entry in data.scores %}
+            <div class="entry">
+                <p>{{ entry.position }}</p>
+                <p>{{ entry.player_name }}</p>
+                <p>{{ entry.quote }}</p>
+                <p>{{ entry.score }}</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+    {% endblock %}
+
+</body>
+
+</html>

@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="../public/stylesheets/style.css">
+    <title>leaderbored</title>
+</head>
+
+<body>
+    {% extends "base.html" %}
+    {% block content %}
+    <h1>leaderbored</h1>
+
+    <form id="newBoard">
+        <label for="boardName">board Name:</label>
+        <input type="text" id="boardName" name="boardName" required>
+        <button type="button" onclick="submitForm()">create Board</button>
+    </form>
+
+    <script>
+        function submitForm() {
+            var formData = new FormData(document.getElementById('newBoard'));
+
+            fetch('/board/create', {
+                method: 'POST',
+                body: formData
+            })
+                .then(data => {
+                    console.log(data);
+                })
+                .catch(error => console.error('error:', error));
+        }
+    </script>
+    {% endblock %}
+</body>
+
+</html>
