@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+    <link rel="stylesheet" href="/style.css">
+    <link rel="stylesheet" href="/board.css">
+</head>
+
+<body>
+    <div id="app" data-app="true">
+        <div class="content">
+            <div class="box">
+                <div class="board_info">
+                    <p class="important">
+                        <i class="fa fa-hashtag" aria-hidden="true"></i>
+                        {{ boardID.slice(0, 4) }}...
+                    </p>
+                    <p>
+                        <i class="fa fa-tag" aria-hidden="true"></i>
+                        {{ boardData.name }}
+                    </p>
+                    <div class="separator"></div>
+                    <p>
+                        <i class="fa fa-question-circle" aria-hidden="true"></i>
+                        by {{ boardData.owner }}
+                    </p>
+                    <p>
+                        <i class="fa fa-random" aria-hidden="true"></i>
+                        {{ boardData.participants }} participants
+                    </p>
+                </div>
+                <div class="self_info">
+                    <p>
+                        <i class="fa fa-user" aria-hidden="true"></i>
+                        notjim
+                    </p>
+                    <p>
+                        1000 points
+                    </p>
+                    <p>
+                        <i class="fa fa-cog" aria-hidden="true"></i>
+                    </p>
+                </div>
+            </div>
+            <form @submit.prevent="submitForm">
+                <label for="name">player name:</label>
+                <input v-model="newPlayer.name" type="text" id="playerName" name="name" required>
+                <label for="points">initial points:</label>
+                <input v-model="newPlayer.points" type="number" id="playerPoints" name="points" required>
+                <button type="submit">create player</button>
+            </form>
+            <div class="board">
+                <div class="entry" v-for="entry in entries" :key="entry.id">
+                    <p>{{ entry.ranking }}</p>
+                    <p>{{ entry.name }}</p>
+                    <p>{{ entry.quote }}</p>
+                    <p>{{ entry.points }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script type="module">
+        import { createApp } from 'https://cdn.skypack.dev/petite-vue';
+
+        createApp({
+            data() {
+                return {
+                    boardID: "{{ boardID }}",
+                    boardData: {},
+                    newPlayer: { name: "", points: "" },
+                    entries: []
+                };
+            },
+            methods: {
+                submitForm() {
+                    const formData = new FormData();
+                    formData.append("boardID", this.boardID);
+                    formData.append("name", this.newPlayer.name);
+                    formData.append("points", this.newPlayer.points);
+
+                    fetch("/player/new", {
+                        method: "POST",
+                        body: formData
+                    })
+                        .then(response => response.json())
+                        .then(response => {
+                            if (!response.success) {
+                                console.error(response.message);
+                                alert(response.message);
+                            } else {
+                                // update entries on success
+                                this.entries = response.entries;
+                            }
+                        })
+                        .catch(error => console.error("error:", error));
+                }
+            },
+            mounted() {
+                fetch("/api/data")
+                    .then(response => response.json())
+                    .then(data => {
+                        this.boardData = data.boardData;
+                        this.entries = data.entries;
+                    })
+                    .catch(error => console.error("error:", error));
+            }
+        }).mount('#app');
+    </script>
+</body>
+
+</html>

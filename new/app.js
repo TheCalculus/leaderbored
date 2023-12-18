@@ -1,15 +1,17 @@
 const { initializeApp } = require("firebase/app");
-const { getFirestore, collection, doc, 
+const { getFirestore, collection, doc,
     addDoc, setDoc, getDoc, getDocs,
-    query, where } 
+    query, where }
     = require("firebase/firestore");
-const bodyParser     = require("body-parser");
-const express        = require("express");
-const multer         = require("multer");
-const upload         = multer();
+const bodyParser = require("body-parser");
+const express = require("express");
+const multer = require("multer");
+const upload = multer();
 const { v4: uuidv4 } = require("uuid");
-const templates      = require("./templates");
-const res = require("express/lib/response");
+const templates = require("./templates");
+
+// formatter removes all alignment
+// will (maybe) add it back later
 
 const PORT = 8000;
 
@@ -25,8 +27,11 @@ const firebaseConfig = {
 
 initializeApp(firebaseConfig);
 
-const db  = getFirestore();
+const db = getFirestore();
 const app = express();
+
+const server = require("http").createServer(app);
+const io = require("socket.io")(server);
 
 // configure nunjucks as templating engine, 
 // clear the (nunjuck) cache each initialisation
@@ -42,34 +47,54 @@ app.get("/", (req, res) => {
     res.render("index");
 });
 
+async function getBoard(boardID) {
+    const collRef = collection(db, boardID);
+    let query; // for non-zero queries
+
+    try {
+        query = await getDocs(collRef);
+
+        if (query.length == 0) return { boardData: null, entries: null };
+    } catch (e) {
+        console.error(e);
+        return { boardData: null, entries: null };
+    }
+
+    let entries = [];
+    let boardData;
+
+    query.forEach(element => {
+        let elem = element.data();
+
+        if (element.id == "board") {
+            // this is the board data element
+            boardData = elem;
+        } else {
+            entries.push(elem);
+        }
+    });
+
+    return { boardData: boardData, entries: entries };
+}
+
 app.get("/board/:id", async (req, res) => {
     let boardID = req.params["id"];
 
     if (boardID == null ||
         boardID == undefined) {
         res.status(404);
-    }
-        
-    const collRef = collection(db, boardID);
-
-    try {
-        const query = await getDocs(collRef);
-
-        if (query.length == 0) {
-            res.render("404");
-            return;
-        }
-    } catch (e) {
-        console.error(e);
-        res.status(500);
         return;
     }
 
-    // the namings a little bit weird, but the intention was to convey 
-    // that this data is perfectly safe to hand over
-    const safeSnapshot = (await getDoc(doc(db, boardID, "board"))).data();
+    let { boardData, entries } = await getBoard(boardID);
 
-    res.render("leaderboard", { boardID: boardID, boardData: safeSnapshot });
+    if (!boardData || !entries) {
+        // this should be impossible
+        res.status(404);
+        return;
+    }
+
+    res.render("leaderboard", { boardID: boardID, boardData: boardData, entries: entries });
 });
 
 app.post("/board/create", upload.fields([]), (req, res) => {
@@ -77,7 +102,7 @@ app.post("/board/create", upload.fields([]), (req, res) => {
     const uuid = uuidv4();
 
     const boardColl = collection(db, uuid);
-    
+
     setDoc(doc(boardColl, "board"), {
         name: name,
         owner: "",
@@ -86,28 +111,35 @@ app.post("/board/create", upload.fields([]), (req, res) => {
         settings: ""
     }).catch(e => {
         console.error(e);
-        res.send({ "message": "failure" });
+        res.send({ "success": false, "message": "server error attempting to create board" });
         return;
     });
 
-    res.send({ "message": "success" });
+    res.send({ "success": true, "message": "success" });
 });
 
 app.post("/player/new", upload.fields([]), async (req, res) => {
-    const board  = req.body["boardID"];
-    const name   = req.body["name"];
+    const boardID = req.body["boardID"];
+    const name = req.body["name"];
     const points = req.body["points"];
 
-    if (!(await newPlayer(board, name, points))) {
-        res.send({ "message": "failure"});
+    if (!(await newPlayer(boardID, name, points))) {
+        res.send({ "success": false, "message": "this username already exists in this board" });
         return;
     };
 
-    res.send({ "message": "success" });
+    let { boardData, entries } = getBoard(boardID);
+
+    if (!boardData || !entries) {
+        res.status(404);
+        return;
+    }
+
+    res.send({ "success": true, "message": entries });
 });
 
 async function newPlayer(boardID, playerName, initialPoints) {
-    const uuid      = uuidv4();
+    const uuid = uuidv4();
     const boardColl = collection(db, boardID);
 
     const q = query(boardColl, where("name", "==", playerName));
@@ -116,7 +148,7 @@ async function newPlayer(boardID, playerName, initialPoints) {
         // duplicate username
         return false;
     }
-    
+
     setDoc(doc(boardColl, uuid), {
         name: playerName,
         points: initialPoints,
@@ -126,11 +158,16 @@ async function newPlayer(boardID, playerName, initialPoints) {
         return false;
     });
 
+    io.emit("entries", {
+        entries: (await getBoard(boardID)).entries
+    });
+
     return true;
 }
 
-app.listen(PORT, function () {
-    console.log("listening to requests on port 8000");
+
+server.listen(PORT, function () {
+    console.log(`listening to requests on port ${PORT}`);
 });
 
 module.exports = app;

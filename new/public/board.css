@@ -16,7 +16,7 @@ body {
     display: grid;
     gap: 2rem;
     grid-auto-flow: row;
-    grid-template-rows: auto 1fr auto;
+    grid-template-rows: auto auto 1fr auto;
 }
 
 .box {
@@ -134,4 +134,31 @@ body {
 .entry:nth-child(3) > *,
 .entry:nth-child(4) > * {
     color: var(--main-color);
+}
+
+form {
+    margin: 0 auto;
+}
+
+input[type=text], input[type=number] {
+    padding: 0.1rem;
+    background: var(--bg-color);
+    outline: none;
+    border: none;
+    border-bottom: 0.1rem solid var(--main-color);
+    color: var(--text-color);
+}
+
+button {
+    padding: 0.65rem;
+    background: var(--sub-alt-color);
+    color: var(--sub-color);
+    outline: none;
+    border: none;
+    cursor: pointer;
+    transition: color 150ms;
+}
+
+button:hover {
+    color: var(--text-color);
 }

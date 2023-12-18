@@ -57,7 +57,7 @@
             <input type="text" id="playerName" name="name" required>
             <label for="points">inital points:</label>
             <input type="number" id="playerPoints" name="points" required>
-            <button type="button" onclick="submitForm()">create Board</button>
+            <button type="button" onclick="submitForm()">create player</button>
         </form>
         <div class="board">
             <div class="entry">
@@ -66,37 +66,46 @@
                 <p></p>
                 <p>points</p>
             </div>
-            {% for entry in data.scores %}
+            {% for entry in entries %}
             <div class="entry">
-                <p>{{ entry.position }}</p>
-                <p>{{ entry.player_name }}</p>
+                <p>{{ entry.ranking }}</p>
+                <p>{{ entry.name }}</p>
                 <p>{{ entry.quote }}</p>
-                <p>{{ entry.score }}</p>
+                <p>{{ entry.points }}</p>
             </div>
             {% endfor %}
         </div>
     </div>
 
+    <script src="/socket.io/socket.io.js"></script>
     <script>
+        const socket = io();
         const bid = "{{ boardID }}";
+
+        socket.on('entries', function (data) {
+            console.log("received data from socket:", data);
+        });
 
         function submitForm() {
             var formData = new FormData(document.getElementById("newPlayer"));
             formData.append("boardID", "{{ boardID }}");
-
+            
             fetch("/player/new", {
                 method: "POST",
                 body: formData
             })
                 .then(response => response.json())
                 .then(response => {
-                    console.log(response);
-                    if (response.message == "failure") {
-                        alert("creating new player failed. this player already exists");
+                    if (!response.success) {
+                        console.error(response.message);
+                        alert(response.message);
                     }
+                    // a successful response could just return all entries instead of using sockets...
+                    // i didnt think of this (for some reason). in my defense it was like really early in the morning
                 })
                 .catch(error => console.error("error:", error));
         }
+
     </script>
     {% endblock %}
 

@@ -29,10 +29,10 @@
                 body: formData
             })
                 .then(response => response.json())
-                .then(response => response.message)
-                .then(message => {
-                    if (message == "failure") {
-                        alert("creating new board failed. this could be due to server issues.");
+                .then(response => {
+                    if (!response.success) {
+                        console.error(response.message);
+                        alert(response.message);
                     }
                 })
                 .catch(error => console.error("error:", error));
