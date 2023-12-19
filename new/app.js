@@ -1,3 +1,5 @@
+require("@marko/compiler/register");
+
 const { initializeApp } = require("firebase/app");
 const { getFirestore, collection, doc,
     addDoc, setDoc, getDoc, getDocs,
@@ -8,6 +10,8 @@ const express = require("express");
 const multer = require("multer");
 const upload = multer();
 const { v4: uuidv4 } = require("uuid");
+const markoPlugin = require("@marko/express").default;
+const createServer = require("vite");
 const templates = require("./templates");
 
 // formatter removes all alignment
@@ -30,16 +34,23 @@ initializeApp(firebaseConfig);
 const db = getFirestore();
 const app = express();
 
-const server = require("http").createServer(app);
-const io = require("socket.io")(server);
+const vite = await createServer({
+    server: {
+        middlewareMode: true,
+    },
+    appType: 'custom',
+});
+
+app.use(vite.middlewares);
 
 // configure nunjucks as templating engine, 
 // clear the (nunjuck) cache each initialisation
-templates(app);
+// templates(app);
+// app.set("view engine", "html");
 
 app.set("views", "./views");
-app.set("view engine", "html");
 
+app.use(markoPlugin());
 app.use(express.static(__dirname + "/public"));
 app.use(bodyParser.json());
 
@@ -94,7 +105,9 @@ app.get("/board/:id", async (req, res) => {
         return;
     }
 
-    res.render("leaderboard", { boardID: boardID, boardData: boardData, entries: entries });
+    res.marko(require("./views/template.marko").default,
+        { boardID: boardID, boardData: boardData, entries: entries });
+    // res.render("leaderboard", { boardID: boardID, boardData: boardData, entries: entries });
 });
 
 app.post("/board/create", upload.fields([]), (req, res) => {
@@ -158,15 +171,11 @@ async function newPlayer(boardID, playerName, initialPoints) {
         return false;
     });
 
-    io.emit("entries", {
-        entries: (await getBoard(boardID)).entries
-    });
-
     return true;
 }
 
 
-server.listen(PORT, function () {
+app.listen(PORT, function () {
     console.log(`listening to requests on port ${PORT}`);
 });
 

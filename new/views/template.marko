@@ -1,0 +1,30 @@
+$ const name = "Frank";
+style {
+    .container {
+        margin-left: auto;
+        margin-right: auto;
+        width: 800px;
+    }
+}
+
+<div class="container">
+    <h1>Hello ${name}!</h1>
+    $ const colors = ["red", "green", "blue"];
+    <if(colors.length)>
+        <ul>
+            <for|color| of=colors>
+                <li style={
+                    color: color
+                }>${color}</li>
+            </for>
+        </ul>
+        <ul>
+            <for|entry| of=entries>
+                <li>${entry.name} @ ${entry.rank} w/ ${entry.points}</li>
+            </for>
+        </ul>
+    </if>
+    <else>
+        <div>No colors!</div>
+    </else>
+</div>
